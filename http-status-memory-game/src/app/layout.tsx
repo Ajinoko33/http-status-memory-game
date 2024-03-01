@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { Layout } from '@/components/layout';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "HTTP Status Memory Game",
-  description: "The memory game with http response status code",
+  title: 'HTTP Status Memory Game',
+  description: 'The memory game with http response status code',
 };
 
 export default function RootLayout({
@@ -16,9 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body className={inter.className}>
-        <AntdRegistry>{children}</AntdRegistry>
+        <AntdRegistry>
+          <Layout>{children}</Layout>
+        </AntdRegistry>
       </body>
     </html>
   );
