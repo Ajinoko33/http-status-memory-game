@@ -1,3 +1,4 @@
+import { GameConfigContextProvider } from '@/components';
 import { Layout } from '@/components/layout';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <AntdRegistry>
-          <Layout>{children}</Layout>
+          <GameConfigContextProvider>
+            <Layout>{children}</Layout>
+          </GameConfigContextProvider>
         </AntdRegistry>
       </body>
     </html>

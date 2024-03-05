@@ -11,10 +11,16 @@ const layoutStyle: CSSProperties = {
   width: '100vw',
 };
 
+const contentStyle: CSSProperties = {
+  width: '768px',
+  maxWidth: '100vw',
+  margin: '0 auto',
+};
+
 export const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <AntDLayout style={layoutStyle}>
-      <Content>{children}</Content>
+      <Content style={contentStyle}>{children}</Content>
     </AntDLayout>
   );
 };
