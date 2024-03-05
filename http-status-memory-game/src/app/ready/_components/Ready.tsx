@@ -83,11 +83,7 @@ export const Ready = () => {
                   name='playerAName'
                   style={{ marginBottom: 0 }}
                 >
-                  <Input
-                    placeholder='プレイヤーA'
-                    defaultValue={gameConfig.playerAName}
-                    style={inputStyle}
-                  />
+                  <Input placeholder='プレイヤーA' style={inputStyle} />
                 </Form.Item>
               </Col>
               <Col span={2} className='text-center m-auto'>
@@ -98,11 +94,7 @@ export const Ready = () => {
                   name='playerBName'
                   style={{ marginBottom: 0 }}
                 >
-                  <Input
-                    placeholder='プレイヤーB'
-                    defaultValue={gameConfig.playerBName}
-                    style={inputStyle}
-                  />
+                  <Input placeholder='プレイヤーB' style={inputStyle} />
                 </Form.Item>
               </Col>
               <Col span={2}></Col>
