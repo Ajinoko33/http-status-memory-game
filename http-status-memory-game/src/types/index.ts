@@ -37,6 +37,4 @@ export type Card = {
   id: number;
   type: CardType;
   status: Status;
-  opened: boolean;
-  removed: boolean;
 };

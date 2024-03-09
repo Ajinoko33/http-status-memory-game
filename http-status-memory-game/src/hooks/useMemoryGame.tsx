@@ -1,10 +1,10 @@
 import { Card, GameConfig, Status } from '@/types';
 import lodash from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const maxStatusNums = 15;
 
-const makeCards = (statuses: Status[]) => {
+const makeFieldCards = (statuses: Status[]) => {
   const extractedStatuses = lodash.shuffle(statuses).slice(0, maxStatusNums);
   const codeCards = extractedStatuses.map(
     (status, index) =>
@@ -12,8 +12,6 @@ const makeCards = (statuses: Status[]) => {
         id: index,
         type: 'code',
         status: status,
-        opened: false,
-        removed: false,
       }) as Card,
   );
   const messaageCards = extractedStatuses.map(
@@ -22,32 +20,30 @@ const makeCards = (statuses: Status[]) => {
         id: index + extractedStatuses.length,
         type: 'message',
         status: status,
-        opened: false,
-        removed: false,
       }) as Card,
   );
   return [...codeCards, ...messaageCards];
 };
 
-const changeOpened = (index: number, opened: boolean, fieldCards: Card[]) => {
-  const newCard = { ...fieldCards[index], opened } as Card;
-  const newFieldCards = fieldCards.toSpliced(index, 1, newCard);
-  return newFieldCards;
+const openCard = (index: number, opened: boolean[]) =>
+  opened.toSpliced(index, 1, true);
+const closeTwoCards = (index0: number, index1: number, opened: boolean[]) =>
+  opened.toSpliced(index0, 1, false).toSpliced(index1, 1, false);
+const removeTwoCards = (index0: number, index1: number, removed: boolean[]) =>
+  removed.toSpliced(index0, 1, true).toSpliced(index1, 1, true);
+
+const isPaired = (
+  firstIndex: number,
+  secondIndex: number,
+  fieldCards: Card[],
+) => {
+  const firstCard = fieldCards[firstIndex];
+  const secondCard = fieldCards[secondIndex];
+  return (
+    firstCard.type !== secondCard.type &&
+    firstCard.status.code === secondCard.status.code
+  );
 };
-const openCard = (index: number, fieldCards: Card[]) =>
-  changeOpened(index, true, fieldCards);
-const closeCard = (index: number, fieldCards: Card[]) =>
-  changeOpened(index, false, fieldCards);
-
-const removeCard = (index: number, fieldCards: Card[]) => {
-  const newCard = { ...fieldCards[index], removed: true } as Card;
-  const newFieldCards = fieldCards.toSpliced(index, 1, newCard);
-  return newFieldCards;
-};
-
-const countUp = (counter: number) => counter + 2;
-
-const changeTurn = (isTurnA: boolean) => !isTurnA;
 
 export const useMemoryGame = (config: GameConfig) => {
   const [fieldCards, setFieldCards] = useState<Card[]>([]);
@@ -55,89 +51,72 @@ export const useMemoryGame = (config: GameConfig) => {
   const [counterB, setCounterB] = useState(0);
   const [isTurnA, setIsTurnA] = useState(config.aIsFirst);
   const [firstIndex, setFirstIndex] = useState<number | undefined>(undefined);
-  const [isSleep, setIsSleep] = useState(false);
-  const [pairedIndexs, setPairedIndexs] = useState<
-    [number, number] | undefined
-  >(undefined);
-
-  useEffect(() => {
-    if (pairedIndexs) {
-      setTimeout(() => {
-        setFieldCards((fc) => removeCard(pairedIndexs[0], fc));
-        setFieldCards((fc) => removeCard(pairedIndexs[1], fc));
-        setIsSleep(false);
-      }, 1000);
-      setPairedIndexs(undefined);
-    }
-  }, [pairedIndexs]);
+  const [opened, setOpened] = useState<boolean[]>([]);
+  const [removed, setRemoved] = useState<boolean[]>([]);
+  const [blocked, setBlocked] = useState<boolean>(false);
 
   const build = useCallback(() => {
-    setFieldCards(lodash.shuffle(makeCards(config.statusSet.statuses)));
+    const fieldCards = lodash.shuffle(
+      makeFieldCards(config.statusSet.statuses),
+    );
+    setFieldCards(fieldCards);
     setCounterA(0);
     setCounterB(0);
     setIsTurnA(config.aIsFirst);
     setFirstIndex(undefined);
-  }, [
-    config,
-    setFieldCards,
-    setCounterA,
-    setCounterB,
-    setIsTurnA,
-    setFirstIndex,
-  ]);
+    setOpened(Array(fieldCards.length).fill(false));
+    setRemoved(Array(fieldCards.length).fill(false));
+    setBlocked(false);
+  }, [config.aIsFirst, config.statusSet.statuses]);
 
-  const selectCard = useCallback(
-    (index: number) => {
-      if (isSleep) return;
-      if (index === firstIndex) return;
-
-      const selectedCard = fieldCards[index];
-      if (selectedCard.removed) return;
-
-      setFieldCards((fc) => openCard(index, fc));
-
-      if (firstIndex === undefined) {
-        // 1枚目の場合
-        setFirstIndex(index);
+  const evalCard = useCallback(
+    (index0: number, index1: number) => {
+      if (index0 === index1) {
         return;
       }
 
-      // 2枚目の場合
-      const firstCard = fieldCards[firstIndex];
-
-      const isPair =
-        selectedCard.type !== firstCard.type &&
-        selectedCard.status.code === firstCard.status.code;
-      if (isPair) {
-        if (isTurnA) setCounterA((ca) => countUp(ca));
-        else setCounterB((cb) => countUp(cb));
-
-        setPairedIndexs([firstIndex, index]);
+      const paired = isPaired(index0, index1, fieldCards);
+      if (paired) {
+        setRemoved((r) => removeTwoCards(index0, index1, r));
+        if (isTurnA) {
+          setCounterA(counterA + 2);
+        } else {
+          setCounterB(counterB + 2);
+        }
       } else {
-        setIsTurnA((ita) => changeTurn(ita));
+        setOpened((o) => closeTwoCards(index0, index1, o));
+        setIsTurnA(!isTurnA);
       }
       setFirstIndex(undefined);
-
-      setIsSleep(true);
-      setTimeout(() => {
-        setFieldCards((fc) => closeCard(index, fc));
-        setFieldCards((fc) => closeCard(firstIndex, fc));
-        setIsSleep(false);
-      }, 1000);
     },
-    [
-      fieldCards,
-      setFieldCards,
-      setCounterA,
-      setCounterB,
-      isTurnA,
-      setIsTurnA,
-      firstIndex,
-      setFirstIndex,
-      isSleep,
-      setIsSleep,
-    ],
+    [counterA, counterB, fieldCards, isTurnA],
   );
 
-  return [fieldCards, counterA, counterB, isTurnA, build, selectCard] as const;
+  const selectCard = useCallback(
+    (index: number) => {
+      if (blocked || opened[index] || removed[index]) return;
+      setOpened((o) => openCard(index, o));
+      if (firstIndex === undefined) {
+        setFirstIndex(index);
+      } else {
+        setBlocked(true);
+        setTimeout(() => {
+          evalCard(firstIndex, index);
+          setBlocked(false);
+        }, 1000);
+      }
+    },
+    [blocked, evalCard, firstIndex, opened, removed],
+  );
+
+  return [
+    fieldCards,
+    counterA,
+    counterB,
+    isTurnA,
+    opened,
+    removed,
+    build,
+    selectCard,
+  ] as const;
 };

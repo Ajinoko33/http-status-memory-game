@@ -13,11 +13,12 @@ export const cardHeight = svgHeight * ratio;
 
 export type CardProps = {
   item: TCard;
+  opened: boolean;
   onClick: () => void;
 };
 
 export const Card: FC<CardProps> = (props) => {
-  const { item, onClick } = props;
+  const { item, opened, onClick } = props;
 
   const frontStyle: CSSProperties = {
     borderWidth: '3px',
@@ -39,8 +40,9 @@ export const Card: FC<CardProps> = (props) => {
         hidden
         id={`card_check_${item.id}`}
         className='card_check'
-        checked={item.opened}
+        checked={opened}
         readOnly
+        // onChange={() => {}}
       />
       <label
         htmlFor={`card_check_${item.id}`}
