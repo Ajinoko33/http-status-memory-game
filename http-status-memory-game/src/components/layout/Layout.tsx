@@ -12,7 +12,7 @@ const layoutStyle: CSSProperties = {
 };
 
 const contentStyle: CSSProperties = {
-  width: '768px',
+  width: '900px',
   maxWidth: '100vw',
   margin: '0 auto',
 };

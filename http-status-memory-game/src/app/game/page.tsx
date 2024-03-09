@@ -1,22 +1,40 @@
 'use client';
 
-import { useGameConfigContext } from '@/components';
+import {
+  Card,
+  cardHeight,
+  cardWidth,
+  useGameConfigContext,
+} from '@/components';
+import { useMemoryGame } from '@/hooks';
+import { Space } from 'antd';
+import { useEffect } from 'react';
 
 export default function ReadyPage() {
   const { gameConfig } = useGameConfigContext();
+  const [fieldCards, counterA, counterB, isTurnA, build, selectCard] =
+    useMemoryGame(gameConfig);
+
+  useEffect(() => {
+    build();
+  }, []);
+
+  console.log(fieldCards);
 
   return (
     <>
-      <div>mode: {gameConfig.mode}</div>
-      <div>playerAName: {gameConfig.playerAName}</div>
-      <div>playerBName: {gameConfig.playerBName}</div>
-      <div>playerBCpuLevel: {gameConfig.cpuLevel}</div>
-      <div>first: {gameConfig.first}</div>
-      <div>statusSetType: {gameConfig.statusSet.type}</div>
-      <div>statusSet:</div>
-      {gameConfig.statusSet.statuses.map((status) => {
-        return <div>{`  ${status.code}: ${status.message}`}</div>;
-      })}
+      <Space wrap>
+        {fieldCards.map((card, index) =>
+          card.removed ? (
+            <div
+              key={card.id}
+              style={{ width: cardWidth, height: cardHeight }}
+            />
+          ) : (
+            <Card key={card.id} item={card} onClick={() => selectCard(index)} />
+          ),
+        )}
+      </Space>
     </>
   );
 }

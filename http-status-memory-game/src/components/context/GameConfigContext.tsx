@@ -13,9 +13,15 @@ import {
 
 const defaultGameConfig: GameConfig = {
   mode: 'PvP',
-  playerAName: 'プレイヤーA',
-  playerBName: 'プレイヤーB',
-  first: 'A',
+  players: {
+    A: {
+      name: 'プレイヤーA',
+    },
+    B: {
+      name: 'プレイヤーB',
+    },
+  },
+  aIsFirst: true,
   statusSet: basicStatusSet,
 };
 

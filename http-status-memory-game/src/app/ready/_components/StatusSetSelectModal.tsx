@@ -5,6 +5,7 @@ import {
   statusGroupNames,
   unbasicStatuses,
 } from '@/data';
+import { maxStatusNums } from '@/hooks';
 import { Status, StatusGroup, StatusSet, StatusSetType } from '@/types';
 import { getStatusSetName } from '@/util';
 import {
@@ -175,6 +176,11 @@ const FormContent = () => {
       <Form.Item>
         <Table columns={columns} dataSource={data} pagination={false} />
       </Form.Item>
+      <Form.Item>
+        <div className='text-center'>
+          {`${maxStatusNums}種類より多く選択した場合は、その中からランダムに${maxStatusNums}種類が選ばれます。`}
+        </div>
+      </Form.Item>
     </>
   );
 };
@@ -249,11 +255,13 @@ export const StatusSetSelectModal: FC<StatusSetSelectModalProps> = (props) => {
       <Form form={form}>
         <FormContent />
         {isEmptyStatusSet && (
-          <div className='font-bold text-red-500 text-center'>
-            1つ以上のステータスを選択してください。
-          </div>
+          <Form.Item>
+            <div className='font-bold text-red-500 text-center'>
+              1種類以上のステータスを選択してください。
+            </div>
+          </Form.Item>
         )}
-        <Form.Item className='text-right'>
+        <Form.Item className='text-right !mb-0'>
           <Space>
             <Button onClick={onCancel}>キャンセル</Button>
             <Button type='primary' htmlType='submit' onClick={onOk}>

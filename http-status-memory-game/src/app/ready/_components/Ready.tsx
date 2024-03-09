@@ -16,8 +16,8 @@ const inputStyle: CSSProperties = {
 };
 
 type FieldType = {
-  playerAName: GameConfig['playerAName'];
-  playerBName: GameConfig['playerBName'];
+  playerAName: GameConfig['players']['A']['name'];
+  playerBName: GameConfig['players']['B']['name'];
 };
 
 export const Ready = () => {
@@ -31,9 +31,15 @@ export const Ready = () => {
     (values: FieldType) => {
       const newGameConfig: GameConfig = {
         ...gameConfig,
-        playerAName: values.playerAName || 'プレイヤーA',
-        playerBName: values.playerBName || 'プレイヤーB',
-        first: aIsFirst ? 'A' : 'B',
+        players: {
+          A: {
+            name: values.playerAName,
+          },
+          B: {
+            name: values.playerBName,
+          },
+        },
+        aIsFirst: aIsFirst,
         statusSet: selectedStatusSet,
       };
       setGameConfig(newGameConfig);
@@ -71,8 +77,8 @@ export const Ready = () => {
           onFinish={onFinish}
           className='w-[512px] max-w-full'
           initialValues={{
-            playerAName: gameConfig.playerAName,
-            playerBName: gameConfig.playerBName,
+            playerAName: gameConfig.players.A.name,
+            playerBName: gameConfig.players.B.name,
           }}
         >
           <Flex vertical gap='32px'>

@@ -6,6 +6,9 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --card-width: 392px;
+  --card-height: 512px;
+  --card-size-ratio: 0.3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,4 +33,37 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.card {
+  height: calc(var(--card-height) * var(--card-size-ratio));
+  width: calc(var(--card-width) * var(--card-size-ratio));
+  position: relative;
+  cursor: pointer;
+}
+
+.card .back,
+.card .front {
+  transition: all 0.5s;
+  position: absolute;
+  left: 0;
+  top: 10;
+  height: 100%;
+  width: 100%;
+  backface-visibility: hidden;
+}
+
+.card .front {
+  -webkit-transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
+}
+
+.card_check:checked ~ .front {
+  -webkit-transform: rotateY(0);
+  transform: rotateY(0);
+}
+
+.card_check:checked ~ .back {
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
