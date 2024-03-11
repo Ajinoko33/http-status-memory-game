@@ -1,6 +1,5 @@
 export type PlayingMode = 'PvE' | 'PvP' | 'training';
 
-export type PlayerPosition = 'A' | 'B';
 export type CpuLevel = 'weak' | 'normal' | 'strong';
 
 export type Player = {
@@ -38,3 +37,5 @@ export type Card = {
   type: CardType;
   status: Status;
 };
+
+export type ResultType = 'A' | 'B' | 'draw';

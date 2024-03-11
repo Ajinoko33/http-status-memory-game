@@ -25,12 +25,12 @@ const defaultGameConfig: GameConfig = {
   statusSet: basicStatusSet,
 };
 
-type GameConfigContext = {
+type TGameConfigContext = {
   gameConfig: GameConfig;
   setGameConfig: Dispatch<SetStateAction<GameConfig>>;
 };
 
-export const GameConfigContext = createContext({} as GameConfigContext);
+export const GameConfigContext = createContext({} as TGameConfigContext);
 
 export const GameConfigContextProvider = ({
   children,

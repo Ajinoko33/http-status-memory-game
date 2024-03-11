@@ -1,13 +1,15 @@
 'use client';
 
 import {
-  Card,
-  cardHeight,
-  cardWidth,
+  Field,
+  PlayerPanel,
+  PointBar,
+  Result,
   useGameConfigContext,
 } from '@/components';
 import { useMemoryGame } from '@/hooks';
-import { Space } from 'antd';
+import { ResultType } from '@/types';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
 export default function ReadyPage() {
@@ -22,6 +24,7 @@ export default function ReadyPage() {
     build,
     selectCard,
   ] = useMemoryGame(gameConfig);
+  const router = useRouter();
 
   useEffect(() => {
     build();
@@ -34,32 +37,58 @@ export default function ReadyPage() {
     [selectCard],
   );
 
+  const onRetry = useCallback(() => {
+    build();
+  }, [build]);
+  const onBack = useCallback(() => {
+    router.replace('/');
+  }, [router]);
+
+  const finished = counterA + counterB === fieldCards.length;
+  const result: ResultType =
+    counterA === counterB ? 'draw' : counterA > counterB ? 'A' : 'B';
+
   return (
     <>
-      <Space wrap>
-        {fieldCards.map((card, index) =>
-          removed[index] ? (
-            <div
-              key={card.id}
-              style={{ width: cardWidth, height: cardHeight }}
-            />
-          ) : (
-            <Card
-              key={card.id}
-              item={card}
-              opened={opened[index]}
-              onClick={() => onClickCard(index)}
-            />
-          ),
+      <div className='flex items-center justify-center min-h-[480px]'>
+        {finished ? (
+          <Result
+            result={result}
+            winnerName={
+              result === 'A'
+                ? gameConfig.players.A.name
+                : gameConfig.players.B.name
+            }
+            onRetry={onRetry}
+            onBack={onBack}
+          />
+        ) : (
+          <Field
+            cards={fieldCards}
+            opened={opened}
+            removed={removed}
+            onClickCard={onClickCard}
+          />
         )}
-      </Space>
+      </div>
       <div className='mt-6 flex items-center justify-center gap-4 text-[24px]'>
-        <div style={isTurnA ? { borderWidth: '2px', borderColor: 'red' } : {}}>
-          {counterA}
+        <PlayerPanel
+          player={gameConfig.players.A}
+          point={counterA}
+          isTurn={isTurnA}
+        />
+        <div className='w-[200px]'>
+          <PointBar
+            total={fieldCards.length}
+            left={counterA}
+            right={counterB}
+          />
         </div>
-        <div style={!isTurnA ? { borderWidth: '2px', borderColor: 'red' } : {}}>
-          {counterB}
-        </div>
+        <PlayerPanel
+          player={gameConfig.players.B}
+          point={counterB}
+          isTurn={!isTurnA}
+        />
       </div>
     </>
   );

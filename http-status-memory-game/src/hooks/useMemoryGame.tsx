@@ -2,7 +2,7 @@ import { Card, GameConfig, Status } from '@/types';
 import lodash from 'lodash';
 import { useCallback, useState } from 'react';
 
-export const maxStatusNums = 15;
+export const maxStatusNums = 10;
 
 const makeFieldCards = (statuses: Status[]) => {
   const extractedStatuses = lodash.shuffle(statuses).slice(0, maxStatusNums);

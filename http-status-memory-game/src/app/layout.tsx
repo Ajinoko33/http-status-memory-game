@@ -1,5 +1,6 @@
 import { GameConfigContextProvider } from '@/components';
 import { Layout } from '@/components/layout';
+import { AntDConfigProvider } from '@/components/provider';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -21,9 +22,11 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <AntdRegistry>
-          <GameConfigContextProvider>
-            <Layout>{children}</Layout>
-          </GameConfigContextProvider>
+          <AntDConfigProvider>
+            <GameConfigContextProvider>
+              <Layout>{children}</Layout>
+            </GameConfigContextProvider>
+          </AntDConfigProvider>
         </AntdRegistry>
       </body>
     </html>
