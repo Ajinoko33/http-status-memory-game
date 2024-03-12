@@ -9,6 +9,7 @@ import {
 } from '@/components';
 import { useMemoryGame } from '@/hooks';
 import { ResultType } from '@/types';
+import { getCpuName } from '@/util';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
@@ -29,6 +30,11 @@ export default function ReadyPage() {
   useEffect(() => {
     build();
   }, [build]);
+
+  const playerAName = 'プレイヤーA';
+  const playerBName = gameConfig.cpuLevel
+    ? getCpuName(gameConfig.cpuLevel)
+    : 'プレイヤーB';
 
   const onClickCard = useCallback(
     (index: number) => {
@@ -54,11 +60,7 @@ export default function ReadyPage() {
         {finished ? (
           <Result
             result={result}
-            winnerName={
-              result === 'A'
-                ? gameConfig.players.A.name
-                : gameConfig.players.B.name
-            }
+            winnerName={result === 'A' ? playerAName : playerBName}
             onRetry={onRetry}
             onBack={onBack}
           />
@@ -72,11 +74,7 @@ export default function ReadyPage() {
         )}
       </div>
       <div className='mt-6 flex items-center justify-center gap-4 text-[24px]'>
-        <PlayerPanel
-          player={gameConfig.players.A}
-          point={counterA}
-          isTurn={isTurnA}
-        />
+        <PlayerPanel name={playerAName} point={counterA} isTurn={isTurnA} />
         <div className='w-[200px]'>
           <PointBar
             total={fieldCards.length}
@@ -84,11 +82,7 @@ export default function ReadyPage() {
             right={counterB}
           />
         </div>
-        <PlayerPanel
-          player={gameConfig.players.B}
-          point={counterB}
-          isTurn={!isTurnA}
-        />
+        <PlayerPanel name={playerBName} point={counterB} isTurn={!isTurnA} />
       </div>
     </>
   );

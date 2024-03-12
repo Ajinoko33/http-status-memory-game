@@ -33,11 +33,13 @@ export const Result: FC<ResultProps> = (props) => {
         )
       }
       extra={
-        <div className='flex flex-col gap-2'>
-          <Button type='primary' onClick={onRetry}>
-            {result === 'draw' ? '決着をつける' : 'もう一度'}
-          </Button>
-          <Button onClick={onBack}>TOPに戻る</Button>
+        <div className='flex justify-center'>
+          <div className='flex flex-col gap-2'>
+            <Button type='primary' onClick={onRetry}>
+              {result === 'draw' ? '決着をつける' : 'もう一度'}
+            </Button>
+            <Button onClick={onBack}>TOPに戻る</Button>
+          </div>
         </div>
       }
     />

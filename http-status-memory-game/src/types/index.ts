@@ -2,11 +2,6 @@ export type PlayingMode = 'PvE' | 'PvP' | 'training';
 
 export type CpuLevel = 'weak' | 'normal' | 'strong';
 
-export type Player = {
-  name: string;
-  cpuLevel?: CpuLevel;
-};
-
 export type Status = {
   code: number;
   message: string;
@@ -23,10 +18,7 @@ export type StatusGroup = '1XX' | '2XX' | '3XX' | '4XX' | '5XX';
 
 export type GameConfig = {
   mode: PlayingMode;
-  players: {
-    A: Player;
-    B: Player;
-  };
+  cpuLevel?: CpuLevel;
   aIsFirst: boolean;
   statusSet: StatusSet;
 };

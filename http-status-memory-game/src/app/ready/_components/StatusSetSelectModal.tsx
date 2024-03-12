@@ -1,3 +1,4 @@
+import { useGameConfigContext } from '@/components';
 import {
   allStatuses,
   basicStatuses,
@@ -6,10 +7,9 @@ import {
   unbasicStatuses,
 } from '@/data';
 import { maxStatusNums } from '@/hooks';
-import { Status, StatusGroup, StatusSet, StatusSetType } from '@/types';
+import { Status, StatusGroup, StatusSetType } from '@/types';
 import { getStatusSetName } from '@/util';
 import {
-  Button,
   Checkbox,
   Flex,
   Form,
@@ -176,26 +176,20 @@ const FormContent = () => {
       <Form.Item>
         <Table columns={columns} dataSource={data} pagination={false} />
       </Form.Item>
-      <Form.Item>
-        <div className='text-center'>
-          {`${maxStatusNums}種類より多く選択した場合は、その中からランダムに${maxStatusNums}種類が選ばれます。`}
-        </div>
-      </Form.Item>
     </>
   );
 };
 
 export type StatusSetSelectModalProps = {
-  statusSet: StatusSet;
-  setStatusSet: (statusSet: StatusSet) => void;
   isOpen: boolean;
   closeModal: () => void;
 };
 
 export const StatusSetSelectModal: FC<StatusSetSelectModalProps> = (props) => {
-  const { statusSet, setStatusSet, isOpen, closeModal } = props;
+  const { isOpen, closeModal } = props;
+  const { gameConfig, setGameConfig } = useGameConfigContext();
   const [form] = useForm<FieldType>();
-  const [isEmptyStatusSet, setIsEmptyStatusSet] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const handleUpdateStatusGroupCheckbox = useCallback(
     (groupName: StatusGroup) => {
@@ -205,42 +199,37 @@ export const StatusSetSelectModal: FC<StatusSetSelectModalProps> = (props) => {
         form.setFieldValue,
       );
     },
-    [],
+    [form.getFieldValue, form.setFieldValue],
   );
 
   // open時にformに初期値を設定
   useEffect(() => {
     if (isOpen) {
-      form.setFieldValue('type', statusSet.type);
+      form.setFieldValue('type', gameConfig.statusSet.type);
       allStatuses.forEach((status) => {
         form.setFieldValue(`${status.code}`, false);
       });
-      statusSet.statuses.forEach((status) => {
+      gameConfig.statusSet.statuses.forEach((status) => {
         form.setFieldValue(`${status.code}`, true);
       });
       statusGroupNames.forEach((name) => handleUpdateStatusGroupCheckbox(name));
     }
-  }, [isOpen]);
+  }, [form, gameConfig, handleUpdateStatusGroupCheckbox, isOpen]);
 
   // OK時にstatusSetにformの値を設定
-  const onOk = useCallback(() => {
+  const onCancel = useCallback(() => {
     const type = form.getFieldValue('type');
     const statuses = allStatuses.filter((status) =>
       form.getFieldValue(`${status.code}`),
     );
     if (statuses.length === 0) {
-      setIsEmptyStatusSet(true);
+      setIsEmpty(true);
       return;
     }
-    setStatusSet({ type, statuses });
-    setIsEmptyStatusSet(false);
+    setGameConfig({ ...gameConfig, statusSet: { type, statuses } });
+    setIsEmpty(false);
     closeModal();
-  }, [form, setStatusSet, closeModal, setIsEmptyStatusSet]);
-
-  const onCancel = useCallback(() => {
-    setIsEmptyStatusSet(false);
-    closeModal();
-  }, [setIsEmptyStatusSet, closeModal]);
+  }, [form, gameConfig, setGameConfig, closeModal, setIsEmpty]);
 
   return (
     <Modal
@@ -248,27 +237,24 @@ export const StatusSetSelectModal: FC<StatusSetSelectModalProps> = (props) => {
       open={isOpen}
       footer={null}
       style={{ top: 24 }}
-      onCancel={closeModal}
-      maskClosable={false}
+      onCancel={onCancel}
+      maskClosable
       width={800}
     >
       <Form form={form}>
-        <FormContent />
-        {isEmptyStatusSet && (
+        {isEmpty && (
           <Form.Item>
             <div className='font-bold text-red-500 text-center'>
               1種類以上のステータスを選択してください。
             </div>
           </Form.Item>
         )}
-        <Form.Item className='text-right !mb-0'>
-          <Space>
-            <Button onClick={onCancel}>キャンセル</Button>
-            <Button type='primary' htmlType='submit' onClick={onOk}>
-              OK
-            </Button>
-          </Space>
+        <Form.Item>
+          <div>
+            {`${maxStatusNums}種類より多く選択した場合は、その中からランダムに${maxStatusNums}種類が選ばれます。`}
+          </div>
         </Form.Item>
+        <FormContent />
       </Form>
     </Modal>
   );
