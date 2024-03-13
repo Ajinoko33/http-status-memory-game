@@ -36,9 +36,7 @@ export default function Home() {
           CPUと対戦
         </Button>
         <Button onClick={() => onClick('PvP')}>2人で対戦</Button>
-        <Button disabled onClick={() => onClick('training')}>
-          トレーニング
-        </Button>
+        <Button onClick={() => onClick('training')}>トレーニング</Button>
       </Flex>
     </Flex>
   );

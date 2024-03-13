@@ -2,7 +2,7 @@
 import { useGameConfigContext } from '@/components';
 import { getStatusSetName } from '@/util';
 import { EditFilled, SwapOutlined } from '@ant-design/icons';
-import { Button, Col, Flex, Row } from 'antd';
+import { Button, Flex } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { StatusSetSelectModal } from './_components/StatusSetSelectModal';
@@ -39,60 +39,54 @@ export default function ReadyPage() {
         gap='48px'
         className='h-full max-h-[512px]'
       >
-        <div className='text-[40px] font-bold'>2人で対戦</div>
-        <Flex vertical gap='32px'>
-          <Row gutter={[0, 24]}>
-            <Col span={2}></Col>
-            <Col span={9}>
-              <div className='text-center'>プレイヤーA</div>
-            </Col>
-            <Col span={2} className='text-center m-auto'>
+        <div className='text-[40px] font-bold'>
+          {gameConfig.mode === 'PvE'
+            ? 'CPUと対戦'
+            : gameConfig.mode === 'PvP'
+              ? '2人で対戦'
+              : 'トレーニング'}
+        </div>
+        <div className='flex flex-col items-center gap-8'>
+          <div className='grid grid-cols-7 gap-4'>
+            <div className='col-span-3 text-center'>プレイヤーA</div>
+            <div className='text-center'>
               <span className='text-base'>vs.</span>
-            </Col>
-            <Col span={9}>
-              <div className='text-center'>プレイヤーB</div>
-            </Col>
-            <Col span={2}></Col>
-
-            <Col span={2}></Col>
-            <Col span={9} className='text-center m-auto text-base'>
+            </div>
+            <div className='col-span-3 text-center'>プレイヤーB</div>
+            <div className='col-span-3 text-center'>
               {gameConfig.aIsFirst ? (
                 <span className='font-bold text-base'>先攻</span>
               ) : (
                 <span className='text-base'>後攻</span>
               )}
-            </Col>
-            <Col span={2} className='text-center m-auto'>
+            </div>
+            <div className='text-center'>
               <Button
                 shape='circle'
                 icon={<SwapOutlined />}
                 onClick={flipFirst}
               />
-            </Col>
-            <Col span={9} className='text-center m-auto'>
+            </div>
+            <div className='col-span-3 text-center'>
               {gameConfig.aIsFirst ? (
                 <span className='text-base'>後攻</span>
               ) : (
                 <span className='font-bold text-base'>先攻</span>
               )}
-            </Col>
-            <Col span={2}></Col>
-
-            <Col span={24} className='text-center'>
-              <div>
-                ステータスセット : {getStatusSetName(gameConfig.statusSet.type)}
-                <span className='ml-1'>
-                  <Button
-                    shape='circle'
-                    icon={<EditFilled />}
-                    onClick={openModal}
-                    size='small'
-                  />
-                </span>
-              </div>
-            </Col>
-          </Row>
-          <Flex vertical align='center' gap='8px'>
+            </div>
+          </div>
+          <div className='col-span-7 text-center'>
+            ステータスセット : {getStatusSetName(gameConfig.statusSet.type)}
+            <span className='ml-1'>
+              <Button
+                shape='circle'
+                icon={<EditFilled />}
+                onClick={openModal}
+                size='small'
+              />
+            </span>
+          </div>
+          <div className='flex flex-col gap-2'>
             <Button
               type='primary'
               htmlType='submit'
@@ -104,8 +98,8 @@ export default function ReadyPage() {
             <Button onClick={onBack} style={{ width: '100px' }}>
               戻る
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
       </Flex>
 
       <StatusSetSelectModal isOpen={isModalOpen} closeModal={closeModal} />
