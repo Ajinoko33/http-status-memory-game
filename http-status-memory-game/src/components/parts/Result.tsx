@@ -1,5 +1,9 @@
 import { ResultType } from '@/types';
-import { DashOutlined, TrophyTwoTone } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  DashOutlined,
+  TrophyTwoTone,
+} from '@ant-design/icons';
 import { Result as AntDResult, Button } from 'antd';
 import { FC } from 'react';
 
@@ -16,19 +20,23 @@ export const Result: FC<ResultProps> = (props) => {
   return (
     <AntDResult
       icon={
-        result === 'draw' ? (
+        result === 'clear' ? (
+          <CheckCircleFilled style={{ color: '#52C41A' }} />
+        ) : result === 'draw' ? (
           <DashOutlined />
         ) : (
           <TrophyTwoTone twoToneColor='#faad14' />
         )
       }
       title={
-        result === 'draw' ? (
+        result === 'clear' ? (
+          'クリア！'
+        ) : result === 'draw' ? (
           '引き分け'
         ) : (
           <>
             <span className='font-bold'>{winnerName}</span>
-            {` の勝利!!`}
+            {` の勝利！`}
           </>
         )
       }

@@ -52,7 +52,13 @@ export default function ReadyPage() {
 
   const finished = counterA + counterB === fieldCards.length;
   const result: ResultType =
-    counterA === counterB ? 'draw' : counterA > counterB ? 'A' : 'B';
+    gameConfig.mode === 'training'
+      ? 'clear'
+      : counterA === counterB
+        ? 'draw'
+        : counterA > counterB
+          ? 'A'
+          : 'B';
 
   return (
     <>
@@ -74,15 +80,29 @@ export default function ReadyPage() {
         )}
       </div>
       <div className='mt-6 flex items-center justify-center gap-4 text-[24px]'>
-        <PlayerPanel name={playerAName} point={counterA} isTurn={isTurnA} />
-        <div className='w-[200px]'>
-          <PointBar
-            total={fieldCards.length}
-            left={counterA}
-            right={counterB}
+        {gameConfig.mode === 'training' ? (
+          <PlayerPanel
+            name={playerAName}
+            point={counterA + counterB}
+            isTurn={false}
           />
-        </div>
-        <PlayerPanel name={playerBName} point={counterB} isTurn={!isTurnA} />
+        ) : (
+          <>
+            <PlayerPanel name={playerAName} point={counterA} isTurn={isTurnA} />
+            <div className='w-[200px]'>
+              <PointBar
+                total={fieldCards.length}
+                left={counterA}
+                right={counterB}
+              />
+            </div>
+            <PlayerPanel
+              name={playerBName}
+              point={counterB}
+              isTurn={!isTurnA}
+            />
+          </>
+        )}
       </div>
     </>
   );

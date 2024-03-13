@@ -30,4 +30,4 @@ export type Card = {
   status: Status;
 };
 
-export type ResultType = 'A' | 'B' | 'draw';
+export type ResultType = 'A' | 'B' | 'draw' | 'clear';

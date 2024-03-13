@@ -47,34 +47,36 @@ export default function ReadyPage() {
               : 'トレーニング'}
         </div>
         <div className='flex flex-col items-center gap-8'>
-          <div className='grid grid-cols-7 gap-4'>
-            <div className='col-span-3 text-center'>プレイヤーA</div>
-            <div className='text-center'>
-              <span className='text-base'>vs.</span>
+          {gameConfig.mode !== 'training' && (
+            <div className='grid grid-cols-7 gap-4'>
+              <div className='col-span-3 text-center'>プレイヤーA</div>
+              <div className='text-center'>
+                <span className='text-base'>vs.</span>
+              </div>
+              <div className='col-span-3 text-center'>プレイヤーB</div>
+              <div className='col-span-3 text-center'>
+                {gameConfig.aIsFirst ? (
+                  <span className='font-bold text-base'>先攻</span>
+                ) : (
+                  <span className='text-base'>後攻</span>
+                )}
+              </div>
+              <div className='text-center'>
+                <Button
+                  shape='circle'
+                  icon={<SwapOutlined />}
+                  onClick={flipFirst}
+                />
+              </div>
+              <div className='col-span-3 text-center'>
+                {gameConfig.aIsFirst ? (
+                  <span className='text-base'>後攻</span>
+                ) : (
+                  <span className='font-bold text-base'>先攻</span>
+                )}
+              </div>
             </div>
-            <div className='col-span-3 text-center'>プレイヤーB</div>
-            <div className='col-span-3 text-center'>
-              {gameConfig.aIsFirst ? (
-                <span className='font-bold text-base'>先攻</span>
-              ) : (
-                <span className='text-base'>後攻</span>
-              )}
-            </div>
-            <div className='text-center'>
-              <Button
-                shape='circle'
-                icon={<SwapOutlined />}
-                onClick={flipFirst}
-              />
-            </div>
-            <div className='col-span-3 text-center'>
-              {gameConfig.aIsFirst ? (
-                <span className='text-base'>後攻</span>
-              ) : (
-                <span className='font-bold text-base'>先攻</span>
-              )}
-            </div>
-          </div>
+          )}
           <div className='col-span-7 text-center'>
             ステータスセット : {getStatusSetName(gameConfig.statusSet.type)}
             <span className='ml-1'>
