@@ -8,12 +8,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: pwd
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: "deploy"
+      - run: pwd
       - run: cd app
+      - run: pwd
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
