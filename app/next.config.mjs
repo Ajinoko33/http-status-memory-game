@@ -3,7 +3,7 @@ const urlPrefix = '/http-status-memory-game';
 
 const nextConfig = {
   images: {
-    loder: 'custom',
+    disableStaticImages: true,
   },
   output: 'export',
 
