@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: "deploy"
+      - run: ls -a
       - run: cd app
       - name: Use Node.js
         uses: actions/setup-node@v4
