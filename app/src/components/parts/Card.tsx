@@ -56,7 +56,7 @@ export const Card: FC<CardProps> = (props) => {
         alt='card'
         width={cardWidth}
         height={cardHeight}
-        src='/images/card_back.svg'
+        src='/http-status-memory-game/images/card_back.svg'
         className='back'
       />
     </div>
