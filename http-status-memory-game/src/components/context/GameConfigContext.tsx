@@ -12,7 +12,8 @@ import {
 } from 'react';
 
 const defaultGameConfig: GameConfig = {
-  mode: 'PvP',
+  mode: 'PvE',
+  cpuLevel: 'normal',
   aIsFirst: true,
   statusSet: basicStatusSet,
 };

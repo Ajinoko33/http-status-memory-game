@@ -9,11 +9,11 @@ import {
 } from '@/components';
 import { useMemoryGame } from '@/hooks';
 import { ResultType } from '@/types';
-import { getCpuName } from '@/util';
+import { getCpuLabel } from '@/util';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
-export default function ReadyPage() {
+export default function GamePage() {
   const { gameConfig } = useGameConfigContext();
   const [
     fieldCards,
@@ -32,9 +32,10 @@ export default function ReadyPage() {
   }, [build]);
 
   const playerAName = 'プレイヤーA';
-  const playerBName = gameConfig.cpuLevel
-    ? getCpuName(gameConfig.cpuLevel)
-    : 'プレイヤーB';
+  const playerBName =
+    gameConfig.mode === 'PvE'
+      ? `CPU(${getCpuLabel(gameConfig.cpuLevel)})`
+      : 'プレイヤーB';
 
   const onClickCard = useCallback(
     (index: number) => {

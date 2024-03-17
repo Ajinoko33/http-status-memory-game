@@ -18,7 +18,7 @@ export type StatusGroup = '1XX' | '2XX' | '3XX' | '4XX' | '5XX';
 
 export type GameConfig = {
   mode: PlayingMode;
-  cpuLevel?: CpuLevel;
+  cpuLevel: CpuLevel;
   aIsFirst: boolean;
   statusSet: StatusSet;
 };
@@ -31,3 +31,8 @@ export type Card = {
 };
 
 export type ResultType = 'A' | 'B' | 'draw' | 'clear';
+
+export type Selection = {
+  first: number;
+  second: number;
+};

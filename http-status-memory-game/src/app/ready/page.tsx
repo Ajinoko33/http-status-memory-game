@@ -1,8 +1,8 @@
 'use client';
 import { useGameConfigContext } from '@/components';
-import { getStatusSetName } from '@/util';
+import { getCpuLabel, getStatusSetName } from '@/util';
 import { EditFilled, SwapOutlined } from '@ant-design/icons';
-import { Button, Flex } from 'antd';
+import { Button, Flex, Radio, RadioChangeEvent } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { StatusSetSelectModal } from './_components/StatusSetSelectModal';
@@ -22,6 +22,12 @@ export default function ReadyPage() {
   const flipFirst = useCallback(() => {
     setGameConfig({ ...gameConfig, aIsFirst: !gameConfig.aIsFirst });
   }, [gameConfig, setGameConfig]);
+  const onChangeCpuLevel = useCallback(
+    (e: RadioChangeEvent) => {
+      setGameConfig({ ...gameConfig, cpuLevel: e.target.value });
+    },
+    [gameConfig, setGameConfig],
+  );
 
   const openModal = useCallback(() => {
     setIsModalOpen(true);
@@ -46,19 +52,23 @@ export default function ReadyPage() {
               ? '2人で対戦'
               : 'トレーニング'}
         </div>
-        <div className='flex flex-col items-center gap-8'>
+        <div className='flex flex-col items-center gap-8 text-base'>
           {gameConfig.mode !== 'training' && (
-            <div className='grid grid-cols-7 gap-4'>
-              <div className='col-span-3 text-center'>プレイヤーA</div>
-              <div className='text-center'>
-                <span className='text-base'>vs.</span>
+            <div className='grid grid-cols-7 gap-3'>
+              <div className='col-span-3 flex items-center justify-center text-center'>
+                プレイヤーA
               </div>
-              <div className='col-span-3 text-center'>プレイヤーB</div>
-              <div className='col-span-3 text-center'>
+              <div className='text-center'>vs.</div>
+              <div className='col-span-3 flex items-center justify-center text-center'>
+                {gameConfig.mode === 'PvE'
+                  ? `CPU(${getCpuLabel(gameConfig.cpuLevel)})`
+                  : 'プレイヤーB'}
+              </div>
+              <div className='col-span-3 flex items-center justify-center text-center'>
                 {gameConfig.aIsFirst ? (
-                  <span className='font-bold text-base'>先攻</span>
+                  <span className='font-bold'>先攻</span>
                 ) : (
-                  <span className='text-base'>後攻</span>
+                  '後攻'
                 )}
               </div>
               <div className='text-center'>
@@ -68,25 +78,43 @@ export default function ReadyPage() {
                   onClick={flipFirst}
                 />
               </div>
-              <div className='col-span-3 text-center'>
+              <div className='col-span-3 flex items-center justify-center text-center'>
                 {gameConfig.aIsFirst ? (
-                  <span className='text-base'>後攻</span>
+                  '後攻'
                 ) : (
-                  <span className='font-bold text-base'>先攻</span>
+                  <span className='font-bold'>先攻</span>
                 )}
               </div>
             </div>
           )}
-          <div className='col-span-7 text-center'>
-            ステータスセット : {getStatusSetName(gameConfig.statusSet.type)}
-            <span className='ml-1'>
-              <Button
-                shape='circle'
-                icon={<EditFilled />}
-                onClick={openModal}
-                size='small'
-              />
-            </span>
+          <div className='grid grid-cols-2 gap-3'>
+            <div className='text-right'>ステータスセット :</div>
+            <div>
+              {getStatusSetName(gameConfig.statusSet.type)}
+              <span className='ml-1'>
+                <Button
+                  shape='circle'
+                  icon={<EditFilled />}
+                  onClick={openModal}
+                  size='small'
+                />
+              </span>
+            </div>
+            {gameConfig.mode === 'PvE' && (
+              <>
+                <div className='text-right'>CPUの強さ :</div>
+                <div>
+                  <Radio.Group
+                    onChange={onChangeCpuLevel}
+                    value={gameConfig.cpuLevel}
+                  >
+                    <Radio value='weak'>{getCpuLabel('weak')}</Radio>
+                    <Radio value='normal'>{getCpuLabel('normal')}</Radio>
+                    <Radio value='strong'>{getCpuLabel('strong')}</Radio>
+                  </Radio.Group>
+                </div>
+              </>
+            )}
           </div>
           <div className='flex flex-col gap-2'>
             <Button

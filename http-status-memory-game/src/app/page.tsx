@@ -32,9 +32,7 @@ export default function Home() {
         神経衰弱
       </div>
       <Flex vertical gap='middle'>
-        <Button disabled onClick={() => onClick('PvE')}>
-          CPUと対戦
-        </Button>
+        <Button onClick={() => onClick('PvE')}>CPUと対戦</Button>
         <Button onClick={() => onClick('PvP')}>2人で対戦</Button>
         <Button onClick={() => onClick('training')}>トレーニング</Button>
       </Flex>
